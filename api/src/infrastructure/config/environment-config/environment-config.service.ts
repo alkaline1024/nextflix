@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TMDBConfig } from '@domain/config/tmdb.interface';
+import { ITMDBConfig } from '@domain/config/tmdb.interface';
 
 @Injectable()
-export class EnvironmentConfigService implements TMDBConfig {
+export class EnvironmentConfigService implements ITMDBConfig {
   constructor(private configService: ConfigService) {}
 
   getEnvConfig(key: string): string {
