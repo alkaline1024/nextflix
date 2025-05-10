@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { EnvironmentConfigModule } from './infrastructure/config/environment-config/environment-config.module';
-import { LoggerModule } from './infrastructure/logger/logger.module';
-import { ExceptionsModule } from './infrastructure/exceptions/exceptions.module';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './controllers';
 
 @Module({
-  imports: [EnvironmentConfigModule, LoggerModule, ExceptionsModule],
-  controllers: [],
-  providers: [],
+  imports: [HttpModule, ConfigModule.forRoot({ isGlobal: true })],
+  controllers: [AppController],
 })
 export class AppModule {}
