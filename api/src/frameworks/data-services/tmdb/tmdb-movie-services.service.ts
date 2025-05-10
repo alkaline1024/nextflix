@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { TmdbHttpService } from './tmdb-http.service';
 import { Movie } from '@core/entities/movie.entity';
 import { IMovieService } from '@core/abstracts/movie-repository.abstract';
 import { GetListResponse } from '@core/entities/tmdb.entity';
@@ -8,40 +7,33 @@ import { MoviePresenter } from '@core/dtos/movie.dto';
 
 @Injectable()
 export class TmdbMovieService implements IMovieService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly tmdbHttp: TmdbHttpService) {}
 
-  private async fetchMovieList(
-    type: 'popular' | 'now_playing' | 'top_rated' | 'upcoming',
+  private async fetchAndMap(
+    endpoint: string,
   ): Promise<GetListResponse<MoviePresenter>> {
-    const response = await firstValueFrom(
-      this.httpService.get<GetListResponse<Movie>>(`/movie/${type}`),
-    );
-    const page = response.data.page ?? 1;
-    const results = response.data.results ?? [];
-    const total_pages = response.data.total_pages ?? 1;
-    const total_results = response.data.total_results ?? results.length;
-
+    const data = await this.tmdbHttp.fetch<GetListResponse<Movie>>(endpoint);
     return {
-      page,
-      results: results.map((data: Movie) => new MoviePresenter(data)),
-      total_pages,
-      total_results,
+      page: data.page,
+      results: data.results.map((movie) => new MoviePresenter(movie)),
+      total_pages: data.total_pages,
+      total_results: data.total_results,
     };
   }
 
   async getPopular() {
-    return this.fetchMovieList('popular');
+    return this.fetchAndMap('/movie/popular');
   }
 
   async getNowPlaying() {
-    return this.fetchMovieList('now_playing');
+    return this.fetchAndMap('/movie/now_playing');
   }
 
   async getTopRated() {
-    return this.fetchMovieList('top_rated');
+    return this.fetchAndMap('/movie/top_rated');
   }
 
   async getUpcoming() {
-    return this.fetchMovieList('upcoming');
+    return this.fetchAndMap('/movie/upcoming');
   }
 }

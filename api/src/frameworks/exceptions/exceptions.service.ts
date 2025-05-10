@@ -13,19 +13,19 @@ import {
 
 @Injectable()
 export class ExceptionsService implements IExceptionService {
-  throwNotFoundException(message?: IExceptionMessage): void {
+  throwNotFoundException(message?: IExceptionMessage): never {
     throw new NotFoundException(message);
   }
-  throwInternalServerErrorException(message?: IExceptionMessage): void {
+  throwInternalServerErrorException(message?: IExceptionMessage): never {
     throw new InternalServerErrorException(message);
   }
-  throwBadRequestException(message?: IExceptionMessage): void {
+  throwBadRequestException(message?: IExceptionMessage): never {
     throw new BadRequestException(message);
   }
-  throwForbiddenException(message?: IExceptionMessage): void {
+  throwForbiddenException(message?: IExceptionMessage): never {
     throw new ForbiddenException(message);
   }
-  throwUnauthorizedException(message?: IExceptionMessage): void {
+  throwUnauthorizedException(message?: IExceptionMessage): never {
     throw new UnauthorizedException(message);
   }
 }

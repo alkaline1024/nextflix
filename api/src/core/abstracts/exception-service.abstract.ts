@@ -4,9 +4,9 @@ export interface IExceptionMessage {
 }
 
 export abstract class IExceptionService {
-  abstract throwNotFoundException(data: IExceptionMessage): void;
-  abstract throwInternalServerErrorException(data?: IExceptionMessage): void;
-  abstract throwBadRequestException(data?: IExceptionMessage): void;
-  abstract throwForbiddenException(data?: IExceptionMessage): void;
-  abstract throwUnauthorizedException(data?: IExceptionMessage): void;
+  abstract throwNotFoundException(data: IExceptionMessage): never;
+  abstract throwInternalServerErrorException(data?: IExceptionMessage): never;
+  abstract throwBadRequestException(data?: IExceptionMessage): never;
+  abstract throwForbiddenException(data?: IExceptionMessage): never;
+  abstract throwUnauthorizedException(data?: IExceptionMessage): never;
 }
