@@ -6,6 +6,7 @@ import { ExceptionsService } from 'frameworks/exceptions/exceptions.service';
 import { AxiosError } from 'axios';
 import { TMDB_CONFIG } from 'configuration';
 import { ConfigService } from '@nestjs/config';
+import { GetListResponse } from '@core/entities/tmdb.entity';
 
 @Injectable()
 export class TmdbHttpService {
@@ -39,5 +40,15 @@ export class TmdbHttpService {
         ),
     );
     return response.data as T;
+  }
+
+  async fetchListAndMap<T>(endpoint: string): Promise<GetListResponse<T>> {
+    const data = await this.fetch<GetListResponse<T>>(endpoint);
+    return {
+      page: data.page,
+      results: data.results,
+      total_pages: data.total_pages,
+      total_results: data.total_results,
+    };
   }
 }
