@@ -4,7 +4,6 @@ import { Genre } from '../entities/genre.entity';
 export class GenrePresenter {
   @ApiProperty()
   id: number;
-
   @ApiProperty()
   name: string;
 
