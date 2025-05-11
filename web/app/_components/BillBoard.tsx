@@ -17,6 +17,14 @@ const BillBoard = ({
     );
   }
 
+  if (!billboard) {
+    return (
+      <div className="flex min-h-[65vh] items-center justify-center">
+        <h1 className="text-2xl font-bold text-white">No billboard available</h1>
+      </div>
+    );
+  }
+
   const name = getName(billboard);
   return (
     <div>

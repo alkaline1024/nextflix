@@ -28,7 +28,7 @@ export function getPosterUrl(
     | "w780"
     | "original" = "w500",
 ) {
-  if (!item.poster_path) return "";
+  if (!item || !item.poster_path) return "";
   return `https://image.tmdb.org/t/p/${size}${item.poster_path}`;
 }
 
@@ -36,7 +36,7 @@ export function getBackdropUrl(
   item: { backdrop_path?: string },
   size: "w300" | "w780" | "w1280" | "original" = "original",
 ) {
-  if (!item.backdrop_path) return "";
+  if (!item || !item.backdrop_path) return "";
   return `https://image.tmdb.org/t/p/${size}${item.backdrop_path}`;
 }
 

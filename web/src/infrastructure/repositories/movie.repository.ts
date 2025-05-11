@@ -3,8 +3,7 @@ import { MovieRepository } from "@/application/repositories/movie.repository.int
 import { fetchWithErrorHandling } from "@/utils/format";
 
 export class MovieApiRepository implements MovieRepository {
-  private baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+  private baseUrl = process.env.API_BASE_URL || "http://localhost:8080";
 
   async getPopular(): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
