@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TmdbHttpService } from './tmdb-http.service';
-import { IGenreRepository } from 'core/abstracts/genre-repository.abstract';
+import { IGenreRepository } from '@core/abstracts/genre-service.abstract';
 import { GenrePresenter } from 'core/dtos/genre.dto';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TmdbHttpService } from './tmdb-http.service';
-import { IMovieService } from '@core/abstracts/movie-repository.abstract';
+import { IMovieService } from '@core/abstracts/movie-service.abstract';
 import { MoviePresenter } from '@core/dtos/movie.dto';
 
 @Injectable()

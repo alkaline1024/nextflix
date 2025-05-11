@@ -8,16 +8,25 @@ import { LoggerModule } from 'frameworks/logger/logger.module';
 import { ExceptionsModule } from 'frameworks/exceptions/exceptions.module';
 import { GenreController } from './controllers/genre.controller';
 import { GenreUseCaseModule } from './use-cases/genre/genre-use-case.module';
+import { TrendingController } from './controllers/trending.controller';
+import { TrendingUseCaseModule } from './use-cases/trending/trending-use-case.module';
 
 @Module({
-  controllers: [AppController, MovieController, TvController, GenreController],
+  controllers: [
+    AppController,
+    MovieController,
+    TvController,
+    GenreController,
+    TrendingController,
+  ],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    LoggerModule,
+    ExceptionsModule,
     TmdbMovieModule,
     MovieUseCasesModule,
     TvUseCasesModule,
-    LoggerModule,
-    ExceptionsModule,
+    TrendingUseCaseModule,
     GenreUseCaseModule,
   ],
   providers: [],

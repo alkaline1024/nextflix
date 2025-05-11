@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TmdbHttpService } from './tmdb-http.service';
-import { ITvService } from '@core/abstracts/tv-repository.abstract';
+import { ITvService } from '@core/abstracts/tv-service.abstract';
 import { TvPresenter } from '@core/dtos/tv.dto';
 import { GetListResponse } from '@core/entities/tmdb.entity';
 
