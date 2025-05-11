@@ -36,7 +36,12 @@ export default function TvPage() {
 
   return (
     <div className="mb-64 space-y-12">
-      <BillBoard billboard={popularTv[0]} loading={popularLoading} />
+      <BillBoard
+        billboard={popularTv[0]}
+        loading={popularLoading}
+        genres={genres}
+        tagLine="The Most Popular TV Shows"
+      />
       <div className="relative z-10 space-y-10 pt-16">
         <Carousel
           title="Popular TV Shows"

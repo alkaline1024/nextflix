@@ -52,5 +52,14 @@ export function useMyList() {
     }
   }
 
-  return { list, add, remove, clear, error };
+  async function refresh() {
+    try {
+      setList(await repo.getList());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  return { list, add, remove, clear, refresh, error };
 }

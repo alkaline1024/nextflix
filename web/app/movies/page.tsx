@@ -36,7 +36,12 @@ export default function MoviesPage() {
 
   return (
     <div className="mb-64 space-y-12">
-      <BillBoard billboard={popularMovies[0]} loading={popularLoading} />
+      <BillBoard
+        billboard={popularMovies[0]}
+        loading={popularLoading}
+        genres={genres}
+        tagLine="The Most Popular Movies"
+      />
       <div className="relative z-10 space-y-10 pt-16">
         <Carousel
           title="Popular Movies"

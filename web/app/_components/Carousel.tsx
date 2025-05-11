@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Tv } from "@/entities/models/tv";
 import { Movie } from "@/entities/models/movie";
@@ -23,9 +23,39 @@ export function Carousel({
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const buttonWidth = "64px";
+  const [buttonWidth, setButtonWidth] = useState("64px");
+  const [itemsPerPage, setItemsPerPage] = useState(7);
 
-  const itemsPerPage = 7;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const updateLayout = () => {
+      console.log("Updating layout");
+      const width = window.innerWidth;
+      if (width >= 1200) {
+        setButtonWidth("64px");
+        setItemsPerPage(7);
+      } else if (width >= 992) {
+        setButtonWidth("48px");
+        setItemsPerPage(6);
+      } else if (width >= 768) {
+        setButtonWidth("32px");
+        setItemsPerPage(5);
+      } else if (width >= 640) {
+        setButtonWidth("32px");
+        setItemsPerPage(4);
+      } else {
+        setButtonWidth("32px");
+        setItemsPerPage(3);
+      }
+    };
+
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    return () => {
+      window.removeEventListener("resize", updateLayout);
+    };
+  }, []);
   const itemMargin = "4px";
   const itemWidth = `calc(100% / ${itemsPerPage} - (${buttonWidth} * 2) / ${itemsPerPage} - (${itemMargin} * 2) + ((${itemMargin} * 2) / ${itemsPerPage}))`;
 

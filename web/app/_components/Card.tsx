@@ -32,7 +32,7 @@ export default function Card({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHover, setIsHover] = useState(false);
-  const { list, add, remove } = useMyList();
+  const { list, add, remove, refresh } = useMyList();
   let hoverTimeout: NodeJS.Timeout;
   const uniqueId = `carousel-item-${idx}-${uuidv4()}`;
   const name = getName(item);
@@ -136,8 +136,8 @@ export default function Card({
                 }}
                 title={
                   list.some((i) => i.id === item.id)
-                    ? "Remove from Watchlist"
-                    : "Add to Watchlist"
+                    ? "Remove from My List"
+                    : "Add to My List"
                 }
               >
                 <Icon
@@ -148,7 +148,7 @@ export default function Card({
                       : "mdi:plus"
                   }
                 />
-                Watchlist
+                My List
               </button>
             </div>
             <h3 className="text-start text-base font-semibold">

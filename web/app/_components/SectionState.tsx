@@ -48,8 +48,8 @@ export function SectionState({
     );
   if (empty)
     return (
-      <div className="bg-white/10 p-2 text-center">
-        <p className="text-red-500">No items</p>
+      <div className="p-4 text-center">
+        <p className="opacity-60">No items</p>
       </div>
     );
   return <>{children}</>;

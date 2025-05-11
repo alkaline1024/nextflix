@@ -30,7 +30,12 @@ export default function Home() {
   return (
     <div className="relative mb-64 space-y-12">
       <div>
-        <BillBoard billboard={billboard} loading={trendingTvLoading} />
+        <BillBoard
+          billboard={billboard}
+          loading={trendingTvLoading}
+          genres={[...tvGenres, ...movieGenres]}
+          tagLine="#1 in TV Shows Today"
+        />
         <div className="relative z-10 space-y-10 pt-16">
           <Carousel
             title="Trending Movies Today"
