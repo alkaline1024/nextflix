@@ -12,9 +12,17 @@ const AppHeader = () => {
   ];
 
   return (
-    <div className="fixed top-0 z-50 flex w-full items-center gap-5 bg-[#141414] px-16 py-2">
+    <div className="fixed top-0 z-50 flex w-full items-center gap-5 bg-gradient-to-b from-[#141414] to-transparent px-3 py-3 md:px-16">
       <Image
-        className="h-auto w-auto"
+        className="h-12 w-auto md:hidden"
+        src="/images/Netflix_N.png"
+        alt="Logo"
+        priority={true}
+        width={120}
+        height={30}
+      />
+      <Image
+        className="h-auto w-auto max-md:hidden"
         src="/images/Netflix_Logo_RGB.png"
         alt="Logo"
         priority={true}

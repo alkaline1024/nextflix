@@ -5,11 +5,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { Tv } from "@/entities/models/tv";
 import { Movie } from "@/entities/models/movie";
 import { Genre } from "@/entities/models/genre";
-import {
-  formatNumberShort,
-  getName,
-  getPosterUrl,
-} from "../../src/utils/format";
+
+const baseImgUrl = "https://image.tmdb.org/t/p/w500";
 
 export default function Card({
   item,
@@ -31,13 +28,17 @@ export default function Card({
   dynamicTop?: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
+
   const [isHover, setIsHover] = useState(false);
-  const { list, add, remove, refresh } = useMyList();
+  const { list, add, remove } = useMyList();
+
   let hoverTimeout: NodeJS.Timeout;
+
   const uniqueId = `carousel-item-${idx}-${uuidv4()}`;
-  const name = getName(item);
+  const name = "title" in item ? item.title : item.name;
   const releaseDate =
     "release_date" in item ? item.release_date : item.first_air_date;
+
   const [currentTop, setCurrentTop] = useState(0);
   const [currentLeft, setCurrentLeft] = useState(0);
   const [currentWidth, setCurrentWidth] = useState(itemWidth);
@@ -47,7 +48,8 @@ export default function Card({
         setCurrentWidth(cardRef.current.offsetWidth + "px");
       }
     }
-  }, [currentWidth]);
+  }, []);
+
   useEffect(() => {
     const currentItem = document.getElementById(uniqueId);
     const rect = currentItem?.getBoundingClientRect();
@@ -57,7 +59,19 @@ export default function Card({
         setCurrentTop(rect.top);
       }
     }
-  }, [isHover, uniqueId, dynamicTop]);
+  }, [isHover, uniqueId]);
+
+  const formatNumberShort = (num: number): string => {
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 10_000) {
+      return (num / 1_000).toFixed(0).replace(/\.0$/, "") + "K";
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+    }
+    return num.toString();
+  };
+
   return (
     <div
       ref={cardRef}
@@ -80,7 +94,7 @@ export default function Card({
     >
       <img
         alt={name}
-        src={getPosterUrl(item)}
+        src={`${baseImgUrl}${item.poster_path}`}
         loading="lazy"
         className="h-full w-full object-cover"
       />
@@ -105,7 +119,7 @@ export default function Card({
           }}
         >
           <img
-            src={getPosterUrl(item)}
+            src={`${baseImgUrl}${item.poster_path}`}
             alt={name}
             loading="lazy"
             className="h-full w-full object-cover"
@@ -136,8 +150,8 @@ export default function Card({
                 }}
                 title={
                   list.some((i) => i.id === item.id)
-                    ? "Remove from My List"
-                    : "Add to My List"
+                    ? "Remove from Watchlist"
+                    : "Add to Watchlist"
                 }
               >
                 <Icon
@@ -148,7 +162,7 @@ export default function Card({
                       : "mdi:plus"
                   }
                 />
-                My List
+                Watchlist
               </button>
             </div>
             <h3 className="text-start text-base font-semibold">

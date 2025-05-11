@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} overflow-x-hidden antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} h-screen w-screen !overflow-x-hidden antialiased`}
         style={{ background: "#141414", color: "#fff" }}
       >
         <AppHeader />
