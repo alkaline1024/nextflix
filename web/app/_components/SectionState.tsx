@@ -21,7 +21,7 @@ export function SectionState({
 }) {
   if (loading)
     return (
-      <div>
+      <div className="md:ml-16">
         {title && <h2 className="mb-4 text-2xl font-bold">{title}</h2>}
         <div className="flex flex-row">
           {Array.from({ length: itemsPerPage }).map((_, idx) => (
