@@ -28,51 +28,72 @@ function useFetchList<T, Args extends unknown[]>(
     useCase
       .execute(...args)
       .then(setData)
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)))
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : String(e)),
+      )
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   return { data, loading, error };
 }
 
 export function usePopularTv() {
-  const { data: tv, loading, error } = useFetchList<Tv, []>(
+  const {
+    data: tv,
+    loading,
+    error,
+  } = useFetchList<Tv, []>(
     () => new GetPopularTvUseCase(new TvApiRepository()),
-    []
+    [],
   );
   return { tv, loading, error };
 }
 
 export function useAiringTodayTv() {
-  const { data: tv, loading, error } = useFetchList<Tv, []>(
+  const {
+    data: tv,
+    loading,
+    error,
+  } = useFetchList<Tv, []>(
     () => new GetAiringTodayTvUseCase(new TvApiRepository()),
-    []
+    [],
   );
   return { tv, loading, error };
 }
 
 export function useOnTheAirTv() {
-  const { data: tv, loading, error } = useFetchList<Tv, []>(
+  const {
+    data: tv,
+    loading,
+    error,
+  } = useFetchList<Tv, []>(
     () => new GetOnTheAirTvUseCase(new TvApiRepository()),
-    []
+    [],
   );
   return { tv, loading, error };
 }
 
 export function useTopRatedTv() {
-  const { data: tv, loading, error } = useFetchList<Tv, []>(
+  const {
+    data: tv,
+    loading,
+    error,
+  } = useFetchList<Tv, []>(
     () => new GetTopRatedTvUseCase(new TvApiRepository()),
-    []
+    [],
   );
   return { tv, loading, error };
 }
 
 export function useTrendingTv(timeWindow: "day" | "week" = "day") {
-  const { data: tv, loading, error } = useFetchList<Tv, ["day" | "week"]>(
+  const {
+    data: tv,
+    loading,
+    error,
+  } = useFetchList<Tv, ["day" | "week"]>(
     () => new GetTrendingTvUseCase(new TvApiRepository()),
     [timeWindow],
-    timeWindow
+    timeWindow,
   );
   return { tv, loading, error };
 }
