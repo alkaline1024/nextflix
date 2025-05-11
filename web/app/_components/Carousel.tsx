@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import { Movie } from "@/entities/models/movie";
 import { Tv } from "@/entities/models/tv";
 import { Icon } from "@iconify/react";
@@ -10,11 +10,17 @@ export function Carousel({
   title,
   items,
   genres,
+  loading,
+  error,
 }: {
   title: string;
   items: Movie[] | Tv[];
   genres: Genre[];
+  loading: boolean;
+  error: string | null;
 }) {
+  let hoverTimeout: NodeJS.Timeout;
+  const [currentHoverIndex, setCurrentHoverIndex] = useState(-1);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const buttonWidth = "64px";
@@ -23,37 +29,26 @@ export function Carousel({
   const itemMargin = "4px";
   const itemWidth = `calc(100% / ${itemsPerPage} - (${buttonWidth} * 2) / ${itemsPerPage} - (${itemMargin} * 2) + ((${itemMargin} * 2) / ${itemsPerPage}))`;
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = 64;
-    }
-  }, [items]);
-
-  // infinity loop carousel logic
   const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const { scrollLeft, clientWidth, scrollWidth } = scrollRef.current;
-      const scrollAmount = clientWidth;
-      let newScrollLeft =
-        direction === "left"
-          ? scrollLeft - scrollAmount
-          : scrollLeft + scrollAmount;
+    if (!scrollRef.current) return;
 
-      if (direction === "left" && scrollLeft <= 64) {
-        scrollRef.current.scrollLeft = scrollWidth / 2;
-        newScrollLeft = scrollRef.current.scrollLeft - scrollAmount;
-      } else if (
-        direction === "right" &&
-        scrollLeft + clientWidth >= scrollWidth - 5
-      ) {
-        scrollRef.current.scrollLeft = scrollWidth / 2 - clientWidth;
-        newScrollLeft = scrollRef.current.scrollLeft + scrollAmount;
-      }
-      scrollRef.current.scrollTo({
-        left: newScrollLeft,
-        behavior: "smooth",
-      });
+    const { scrollLeft, clientWidth, scrollWidth } = scrollRef.current;
+    const isScrollingRight = direction === "right";
+
+    let targetScroll = isScrollingRight
+      ? scrollLeft + clientWidth
+      : scrollLeft - clientWidth;
+
+    if (isScrollingRight && targetScroll == scrollWidth) {
+      targetScroll = 0; // Reset to the start
+    } else if (!isScrollingRight && targetScroll == -clientWidth) {
+      targetScroll = scrollWidth; // Reset to the end
     }
+
+    scrollRef.current.scrollTo({
+      left: targetScroll,
+      behavior: "smooth",
+    });
   };
 
   function formatNumberShort(num: number): string {
@@ -67,9 +62,38 @@ export function Carousel({
     return num.toString();
   }
 
-  const displayItems = [...items, ...items];
+  if (loading)
+    return (
+      <div>
+        <h1
+          className="mb-4 text-2xl font-bold"
+          style={{ paddingLeft: buttonWidth }}
+        >
+          {title}
+        </h1>
+        <div className="flex flex-row" style={{ paddingLeft: buttonWidth }}>
+          {Array.from({ length: itemsPerPage }).map((_, idx) => (
+            <div
+              key={idx}
+              className="aspect-[2/3] animate-pulse rounded-lg bg-white/10"
+              style={{
+                minWidth: `calc(${itemWidth} + ${itemMargin} * 2)`,
+                marginLeft: itemMargin,
+                marginRight: itemMargin,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
 
-  if (!items.length) return <div>No items found.</div>;
+  if (error)
+    return (
+      <div className="bg-white/10 p-2 text-center">
+        <p className="text-red-500">Something went wrong</p>
+      </div>
+    );
+
   return (
     <div>
       <h1
@@ -78,6 +102,7 @@ export function Carousel({
       >
         {title}
       </h1>
+
       <div className="group/carousel relative">
         <button
           aria-label="previous"
@@ -102,18 +127,25 @@ export function Carousel({
               scrollPaddingRight: buttonWidth,
             }}
           >
-            {displayItems.map((item, idx) => {
+            {items.map((item, idx) => {
               const name = "title" in item ? item.title : item.name;
               const releaseDate =
                 "release_date" in item
                   ? item.release_date
                   : item.first_air_date;
 
-              const currentIndex = (idx + 1) % itemsPerPage;
+              let currentLeft = 0;
+              const isHover = currentHoverIndex === idx;
+              const currentItem = scrollRef.current?.children?.item(idx);
+              const rect = currentItem?.getBoundingClientRect();
+              if (rect) {
+                currentLeft = rect.left;
+              }
+
               const getTransformOrigin = () => {
-                if (currentIndex === 0) {
+                if (currentLeft < window.innerWidth / 4) {
                   return "left";
-                } else if (currentIndex === itemsPerPage - 1) {
+                } else if (currentLeft > (window.innerWidth * 3) / 4) {
                   return "right";
                 } else {
                   return "center";
@@ -122,63 +154,89 @@ export function Carousel({
 
               return (
                 <div
+                  id={`carousel-item-${idx}`}
                   key={`carousel-item-${idx}`}
-                  className="group/carousel-item snap-start overflow-hidden rounded-lg transition-transform duration-300"
+                  className="group/carousel-item cursor-pointer snap-start overflow-hidden rounded-lg transition-transform duration-300"
                   style={{
                     minWidth: itemWidth,
-                    marginLeft: itemMargin,
-                    marginRight: itemMargin,
+                    marginLeft: idx === 0 ? buttonWidth : itemMargin,
+                    marginRight:
+                      idx === items.length - 1 ? buttonWidth : itemMargin,
+                  }}
+                  onMouseEnter={() => {
+                    hoverTimeout = setTimeout(() => {
+                      setCurrentHoverIndex(idx);
+                    }, 500);
+                  }}
+                  onMouseLeave={() => {
+                    console.log("Mouse leave");
+                    clearTimeout(hoverTimeout);
+                    setCurrentHoverIndex(-1);
                   }}
                 >
                   <img
-                    src={`${baseImgUrl}${item.poster_path}`}
                     alt={name}
+                    src={`${baseImgUrl}${item.poster_path}`}
                     loading="lazy"
                     className="h-full w-full object-cover"
                   />
+                  {/* Preview Component */}
                   <div
-                    className="invisible absolute top-0 z-50 scale-105 overflow-hidden rounded-lg bg-[#181818] opacity-0 shadow-lg shadow-black transition-all delay-0 group-hover/carousel-item:visible hover:scale-[1.3] hover:opacity-100 hover:delay-500"
+                    className="overflow-visibility absolute top-0 z-50 cursor-default"
                     style={{
-                      left: `calc(${buttonWidth} + ${currentIndex} * (${itemMargin} * 2) + ${currentIndex} * (${itemWidth}))`,
                       width: itemWidth,
-                      transformOrigin: getTransformOrigin(),
+                      left: currentLeft ?? undefined,
+                      visibility: isHover ? "visible" : "hidden",
                     }}
                   >
-                    <img
-                      src={`${baseImgUrl}${item.poster_path}`}
-                      alt={name}
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="space-y-1 p-3">
-                      <div className="flex items-center justify-start gap-1 text-sm">
-                        <Icon icon="mdi:star" className="text-yellow-400" />
-                        <span className="opacity-60">
-                          {item.vote_average.toFixed(1)} (
-                          {formatNumberShort(item.vote_count)})
-                        </span>
-                      </div>
-                      <h3 className="text-start text-base font-semibold">
-                        {name}
-                        <span className="text-sm font-normal opacity-60">
-                          &nbsp; {new Date(releaseDate).getFullYear()}
-                        </span>
-                      </h3>
-                      <div className="text-xs">
-                        <div className="flex flex-wrap items-center">
-                          {item.genre_ids.map((id, idx) => {
-                            const genre = genres.find((g) => g.id === id);
-                            return genre ? (
-                              <div className="flex items-center">
-                                {idx > 0 && (
-                                  <div className="px-[6px] text-[16px] opacity-60">
-                                    &bull;
-                                  </div>
-                                )}
-                                <span key={id}>{genre.name}</span>
-                              </div>
-                            ) : null;
-                          })}
+                    <div
+                      className="overflow-hidden rounded-lg bg-[#181818] shadow-lg shadow-black transition-all duration-300"
+                      style={{
+                        scale: isHover ? 1.5 : 1,
+                        transformOrigin: getTransformOrigin(),
+                      }}
+                    >
+                      <img
+                        src={`${baseImgUrl}${item.poster_path}`}
+                        alt={name}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                      <div
+                        className="space-y-1 p-3 transition-all delay-100 duration-200"
+                        style={{
+                          opacity: isHover ? 1 : 0,
+                        }}
+                      >
+                        <div className="flex items-center justify-start gap-1 text-sm">
+                          <Icon icon="mdi:star" className="text-yellow-400" />
+                          <span className="opacity-60">
+                            {item.vote_average.toFixed(1)} (
+                            {formatNumberShort(item.vote_count)})
+                          </span>
+                        </div>
+                        <h3 className="text-start text-base font-semibold">
+                          {name}
+                          <span className="text-sm font-normal opacity-60">
+                            &nbsp; {new Date(releaseDate).getFullYear()}
+                          </span>
+                        </h3>
+                        <div className="text-xs">
+                          <div className="flex flex-wrap items-center">
+                            {item.genre_ids.map((id, idx) => {
+                              const genre = genres.find((g) => g.id === id);
+                              return genre ? (
+                                <div className="flex items-center">
+                                  {idx > 0 && (
+                                    <div className="px-[6px] text-[16px] opacity-60">
+                                      &bull;
+                                    </div>
+                                  )}
+                                  <span key={id}>{genre.name}</span>
+                                </div>
+                              ) : null;
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
