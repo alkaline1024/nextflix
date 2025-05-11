@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 const AppHeader = () => {
   const pathname = usePathname();
   const paths = [
+    { label: "Home", path: "/home" },
     { label: "Movies", path: "/movies" },
     { label: "TV Shows", path: "/tv" },
   ];
@@ -12,8 +13,10 @@ const AppHeader = () => {
   return (
     <div className="fixed top-0 z-50 flex w-full items-center gap-5 bg-[#141414] px-16 py-2">
       <Image
+        className="h-auto w-auto"
         src="/images/Netflix_Logo_RGB.png"
         alt="Logo"
+        priority={true}
         width={120}
         height={40}
       />

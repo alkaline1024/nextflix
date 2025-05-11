@@ -33,3 +33,18 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none; /* Firefox */
 }
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeInDown {
+  animation: fadeInDown 0.8s ease-in-out;
+}

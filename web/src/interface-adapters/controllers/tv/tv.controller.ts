@@ -7,6 +7,7 @@ import {
   GetOnTheAirTvUseCase,
   GetPopularTvUseCase,
   GetTopRatedTvUseCase,
+  GetTrendingTvUseCase,
 } from "@/application/use-cases/get-tv";
 
 export function usePopularTv() {
@@ -77,6 +78,24 @@ export function useTopRatedTv() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  return { tv, loading, error };
+}
+
+export function useTrendingTv(timeWindow: "day" | "week" = "day") {
+  const [tv, setTv] = useState<Tv[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const repo = new TvApiRepository();
+    const useCase = new GetTrendingTvUseCase(repo);
+    useCase
+      .execute(timeWindow)
+      .then(setTv)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [timeWindow]);
 
   return { tv, loading, error };
 }

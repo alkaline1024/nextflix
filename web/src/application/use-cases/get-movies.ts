@@ -32,3 +32,11 @@ export class GetUpcomingMoviesUseCase {
     return this.movieRepo.getUpcoming();
   }
 }
+
+export class GetTrendingMoviesUseCase {
+  constructor(private movieRepo: MovieRepository) {}
+
+  async execute(timeWindow: "day" | "week" = "day"): Promise<Movie[]> {
+    return this.movieRepo.getTrending(timeWindow);
+  }
+}

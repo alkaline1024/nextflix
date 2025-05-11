@@ -32,3 +32,11 @@ export class GetTopRatedTvUseCase {
     return this.tvRepo.getTopRated();
   }
 }
+
+export class GetTrendingTvUseCase {
+  constructor(private tvRepo: TvRepository) {}
+
+  async execute(timeWindow: "day" | "week" = "day"): Promise<Tv[]> {
+    return this.tvRepo.getTrending(timeWindow);
+  }
+}

@@ -7,6 +7,7 @@ import {
   GetPopularMoviesUseCase,
   GetTopRatedMoviesUseCase,
   GetUpcomingMoviesUseCase,
+  GetTrendingMoviesUseCase,
 } from "@/application/use-cases/get-movies";
 
 export function usePopularMovies() {
@@ -77,6 +78,24 @@ export function useUpcomingMovies() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  return { movies, loading, error };
+}
+
+export function useTrendingMovies(timeWindow: "day" | "week" = "day") {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const repo = new MovieApiRepository();
+    const useCase = new GetTrendingMoviesUseCase(repo);
+    useCase
+      .execute(timeWindow)
+      .then(setMovies)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [timeWindow]);
 
   return { movies, loading, error };
 }

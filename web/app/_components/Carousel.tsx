@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState } from "react";
 import { Movie } from "@/entities/models/movie";
 import { Tv } from "@/entities/models/tv";
@@ -65,12 +67,12 @@ export function Carousel({
   if (loading)
     return (
       <div>
-        <h1
+        <h2
           className="mb-4 text-2xl font-bold"
           style={{ paddingLeft: buttonWidth }}
         >
           {title}
-        </h1>
+        </h2>
         <div className="flex flex-row" style={{ paddingLeft: buttonWidth }}>
           {Array.from({ length: itemsPerPage }).map((_, idx) => (
             <div
@@ -87,10 +89,17 @@ export function Carousel({
       </div>
     );
 
-  if (error)
+  if (error || !items)
     return (
       <div className="bg-white/10 p-2 text-center">
         <p className="text-red-500">Something went wrong</p>
+      </div>
+    );
+
+  if (items.length === 0)
+    return (
+      <div className="bg-white/10 p-2 text-center">
+        <p className="text-red-500">No items</p>
       </div>
     );
 
@@ -106,7 +115,7 @@ export function Carousel({
       <div className="group/carousel relative">
         <button
           aria-label="previous"
-          className="group/carousel-button absolute top-0 bottom-0 left-0 z-20 flex cursor-pointer items-center justify-center bg-black/25 text-white shadow-lg transition hover:bg-black/50 disabled:opacity-30"
+          className="group/carousel-button absolute top-0 bottom-0 left-0 z-20 flex cursor-pointer items-center justify-center bg-transparent text-white shadow-lg transition hover:bg-black/40 disabled:opacity-30"
           style={{
             display: items.length > itemsPerPage ? undefined : "none",
             width: buttonWidth,
@@ -226,7 +235,7 @@ export function Carousel({
                             {item.genre_ids.map((id, idx) => {
                               const genre = genres.find((g) => g.id === id);
                               return genre ? (
-                                <div className="flex items-center">
+                                <div key={id} className="flex items-center">
                                   {idx > 0 && (
                                     <div className="px-[6px] text-[16px] opacity-60">
                                       &bull;
@@ -248,7 +257,7 @@ export function Carousel({
         </div>
         <button
           aria-label="previous"
-          className="group/carousel-button absolute top-0 right-0 bottom-0 z-20 flex cursor-pointer items-center justify-center bg-black/25 text-white shadow-lg transition hover:bg-black/50 disabled:opacity-30"
+          className="group/carousel-button absolute top-0 right-0 bottom-0 z-20 flex cursor-pointer items-center justify-center bg-transparent text-white shadow-lg transition hover:bg-black/40 disabled:opacity-30"
           style={{
             display: items.length > itemsPerPage ? undefined : "none",
             width: buttonWidth,

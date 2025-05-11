@@ -5,4 +5,5 @@ export interface MovieRepository {
   getNowPlaying(): Promise<Movie[]>;
   getTopRated(): Promise<Movie[]>;
   getUpcoming(): Promise<Movie[]>;
+  getTrending(timeWindow?: "day" | "week"): Promise<Movie[]>;
 }

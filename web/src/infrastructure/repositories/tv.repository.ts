@@ -27,4 +27,12 @@ export class TvApiRepository implements TvRepository {
     const data = await res.json();
     return data.results;
   }
+
+  async getTrending(timeWindow: "day" | "week" = "day"): Promise<Tv[]> {
+    const res = await fetch(
+      `http://localhost:8080/trending/tv?time_window=${timeWindow}`,
+    );
+    const data = await res.json();
+    return data.results;
+  }
 }

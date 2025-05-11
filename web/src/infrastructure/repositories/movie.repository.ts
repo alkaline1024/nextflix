@@ -27,4 +27,12 @@ export class MovieApiRepository implements MovieRepository {
     const data = await res.json();
     return data.results;
   }
+
+  async getTrending(timeWindow: "day" | "week" = "day"): Promise<Movie[]> {
+    const res = await fetch(
+      `http://localhost:8080/trending/movie?time_window=${timeWindow}`,
+    );
+    const data = await res.json();
+    return data.results;
+  }
 }

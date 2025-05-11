@@ -5,4 +5,5 @@ export interface TvRepository {
   getAiringToday(): Promise<Tv[]>;
   getOnTheAir(): Promise<Tv[]>;
   getTopRated(): Promise<Tv[]>;
+  getTrending(timeWindow?: "day" | "week"): Promise<Tv[]>;
 }
