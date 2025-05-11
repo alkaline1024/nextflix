@@ -10,6 +10,7 @@ export function formatNumberShort(num: number): string {
 }
 
 export function getName(item: { title?: string; name?: string }): string {
+  if (!item) return "";
   if (typeof item.title === "string" && item.title.length > 0)
     return item.title;
   if (typeof item.name === "string") return item.name;

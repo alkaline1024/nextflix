@@ -3,13 +3,16 @@ import { Genre } from "@/entities/models/genre";
 import { fetchWithErrorHandling } from "@/utils/format";
 
 export class GenreApiRepository implements GenreRepository {
-  private baseUrl = "http://localhost:8080/genres";
+  private baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
   async getGenreMovies(): Promise<Genre[]> {
-    return await fetchWithErrorHandling<Genre[]>(`${this.baseUrl}/movie`);
+    return await fetchWithErrorHandling<Genre[]>(
+      `${this.baseUrl}/genres/movie`,
+    );
   }
 
   async getGenreTvs(): Promise<Genre[]> {
-    return await fetchWithErrorHandling<Genre[]>(`${this.baseUrl}/tv`);
+    return await fetchWithErrorHandling<Genre[]>(`${this.baseUrl}/genres/tv`);
   }
 }

@@ -3,39 +3,40 @@ import { MovieRepository } from "@/application/repositories/movie.repository.int
 import { fetchWithErrorHandling } from "@/utils/format";
 
 export class MovieApiRepository implements MovieRepository {
-  private baseUrl = "http://localhost:8080/movies";
+  private baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
   async getPopular(): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
-      `${this.baseUrl}/popular`,
+      `${this.baseUrl}/movies/popular`,
     );
     return data.results;
   }
 
   async getNowPlaying(): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
-      `${this.baseUrl}/now_playing`,
+      `${this.baseUrl}/movies/now_playing`,
     );
     return data.results;
   }
 
   async getTopRated(): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
-      `${this.baseUrl}/top_rated`,
+      `${this.baseUrl}/movies/top_rated`,
     );
     return data.results;
   }
 
   async getUpcoming(): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
-      `${this.baseUrl}/upcoming`,
+      `${this.baseUrl}/movies/upcoming`,
     );
     return data.results;
   }
 
   async getTrending(timeWindow: "day" | "week" = "day"): Promise<Movie[]> {
     const data = await fetchWithErrorHandling<{ results: Movie[] }>(
-      `http://localhost:8080/trending/movie?time_window=${timeWindow}`,
+      `${this.baseUrl}/trending/movie?time_window=${timeWindow}`,
     );
     return data.results;
   }
