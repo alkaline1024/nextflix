@@ -6,9 +6,11 @@ import { MovieUseCasesModule } from 'use-cases/movie/movie-use-case.module';
 import { TvUseCasesModule } from 'use-cases/tv/tv-use-case.module';
 import { LoggerModule } from 'frameworks/logger/logger.module';
 import { ExceptionsModule } from 'frameworks/exceptions/exceptions.module';
+import { GenreController } from './controllers/genre.controller';
+import { GenreUseCaseModule } from './use-cases/genre/genre-use-case.module';
 
 @Module({
-  controllers: [AppController, MovieController, TvController],
+  controllers: [AppController, MovieController, TvController, GenreController],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TmdbMovieModule,
@@ -16,6 +18,7 @@ import { ExceptionsModule } from 'frameworks/exceptions/exceptions.module';
     TvUseCasesModule,
     LoggerModule,
     ExceptionsModule,
+    GenreUseCaseModule,
   ],
   providers: [],
 })
