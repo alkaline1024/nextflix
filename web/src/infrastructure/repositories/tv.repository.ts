@@ -3,7 +3,8 @@ import { TvRepository } from "@/application/repositories/tv.repository.interface
 import { fetchWithErrorHandling } from "@/utils/format";
 
 export class TvApiRepository implements TvRepository {
-  private baseUrl = process.env.API_BASE_URL || "http://localhost:8080";
+  private baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
   async getPopular(): Promise<Tv[]> {
     const data = await fetchWithErrorHandling<{ results: Tv[] }>(
