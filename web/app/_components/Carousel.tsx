@@ -2,15 +2,22 @@ import { useEffect, useRef } from "react";
 import { Movie } from "@/entities/models/movie";
 import { Tv } from "@/entities/models/tv";
 import { Icon } from "@iconify/react";
+import { Genre } from "@/entities/models/genre";
 
 const baseImgUrl = "https://image.tmdb.org/t/p/w500";
 
-export function Carousel({ items }: { items: Movie[] | Tv[] }) {
+export function Carousel({
+  items,
+  genres,
+}: {
+  items: Movie[] | Tv[];
+  genres: Genre[];
+}) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const buttonWidth = "40px";
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
   const itemMargin = "4px";
   const itemWidth = `calc(100% / ${itemsPerPage} - (${buttonWidth} * 2) / ${itemsPerPage} - (${itemMargin} * 2) + ((${itemMargin} * 2) / ${itemsPerPage}))`;
 
@@ -91,7 +98,7 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
             const releaseDate =
               "release_date" in item ? item.release_date : item.first_air_date;
 
-            const currentIndex = idx % itemsPerPage;
+            const currentIndex = (idx + 1) % itemsPerPage;
             const getTransformOrigin = () => {
               if (currentIndex === 0) {
                 return "left";
@@ -105,7 +112,7 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
             return (
               <div
                 key={`carousel-item-${idx}`}
-                className="group/carousel-item relative snap-start overflow-hidden rounded-lg transition-transform duration-300"
+                className="group/carousel-item snap-start overflow-hidden rounded-lg transition-transform duration-300"
                 style={{
                   minWidth: itemWidth,
                   marginLeft: itemMargin,
@@ -119,9 +126,9 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
                   className="h-full w-full object-cover"
                 />
                 <div
-                  className="invisible fixed z-50 min-h-[calc(50%)] w-[calc(50%)] -translate-y-[calc(100%-5rem)] scale-105 overflow-hidden rounded-lg bg-[#181818] opacity-0 shadow-lg shadow-black transition-all delay-0 group-hover/carousel-item:visible hover:scale-125 hover:opacity-100 hover:delay-500"
+                  className="invisible absolute top-0 z-50 scale-105 overflow-hidden rounded-lg bg-[#181818] opacity-0 shadow-lg shadow-black transition-all delay-0 group-hover/carousel-item:visible hover:scale-[1.3] hover:opacity-100 hover:delay-500"
                   style={{
-                    left: `calc(${buttonWidth} + ${idx % itemsPerPage} * (${itemMargin} * 2) + ${idx % itemsPerPage} * (${itemWidth}))`,
+                    left: `calc(${buttonWidth} + ${currentIndex} * (${itemMargin} * 2) + ${currentIndex} * (${itemWidth}))`,
                     width: itemWidth,
                     transformOrigin: getTransformOrigin(),
                   }}
@@ -132,19 +139,36 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
                     loading="lazy"
                     className="h-full w-full object-cover"
                   />
-                  <div className="h-[5rem] p-4">
-                    <h3 className="text-center text-base font-semibold">
-                      {name}
-                      <span className="text-sm font-normal opacity-60">
-                        &nbsp; {new Date(releaseDate).getFullYear()}
-                      </span>
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs">
+                  <div className="space-y-1 p-4">
+                    <div className="flex items-center justify-start gap-1 text-sm">
                       <Icon icon="mdi:star" className="text-yellow-400" />
                       <span className="opacity-60">
                         {item.vote_average.toFixed(1)} (
                         {formatNumberShort(item.vote_count)})
                       </span>
+                    </div>
+                    <h3 className="text-start text-base font-semibold">
+                      {name}
+                      <span className="text-sm font-normal opacity-60">
+                        &nbsp; {new Date(releaseDate).getFullYear()}
+                      </span>
+                    </h3>
+                    <div className="text-xs">
+                      <div className="flex flex-wrap items-center">
+                        {item.genre_ids.map((id, idx) => {
+                          const genre = genres.find((g) => g.id === id);
+                          return genre ? (
+                            <div className="flex items-center">
+                              {idx > 0 && (
+                                <div className="px-[6px] text-[16px] opacity-60">
+                                  &bull;
+                                </div>
+                              )}
+                              <span key={id}>{genre.name}</span>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
