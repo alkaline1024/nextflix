@@ -8,11 +8,11 @@ const baseImgUrl = "https://image.tmdb.org/t/p/w500";
 export function Carousel({ items }: { items: Movie[] | Tv[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const itemsPerPage = 5;
   const buttonWidth = "40px";
-  const itemMargin = "4px";
 
-  const minItemWidth = `calc(100% / ${itemsPerPage} - (${buttonWidth} * 2) / ${itemsPerPage} - (${itemMargin} * 2) + ((${itemMargin} * 2) / ${itemsPerPage}))`;
+  const itemsPerPage = 5;
+  const itemMargin = "4px";
+  const itemWidth = `calc(100% / ${itemsPerPage} - (${buttonWidth} * 2) / ${itemsPerPage} - (${itemMargin} * 2) + ((${itemMargin} * 2) / ${itemsPerPage}))`;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -47,6 +47,17 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
     }
   };
 
+  function formatNumberShort(num: number): string {
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 10_000) {
+      return (num / 1_000).toFixed(0).replace(/\.0$/, "") + "K";
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+    }
+    return num.toString();
+  }
+
   const displayItems = [...items, ...items];
 
   if (!items.length) return <div>No items found.</div>;
@@ -66,41 +77,81 @@ export function Carousel({ items }: { items: Movie[] | Tv[] }) {
           className="hidden text-4xl transition group-hover/carousel:block group-hover/carousel-button:scale-125"
         />
       </button>
-      <div
-        ref={scrollRef}
-        className="no-scrollbar flex w-full snap-x snap-mandatory flex-row overflow-x-auto"
-        style={{
-          scrollPaddingLeft: `${buttonWidth}`,
-          scrollPaddingRight: `${buttonWidth}`,
-        }}
-      >
-        {displayItems.map((item, idx) => {
-          const name = "title" in item ? item.title : item.name;
-          const releaseDate =
-            "release_date" in item ? item.release_date : item.first_air_date;
-          return (
-            <div
-              key={`carousel-item-${idx}`}
-              className="group relative snap-start overflow-hidden rounded-lg transition-transform duration-300 hover:z-10 hover:scale-110"
-              style={{
-                minWidth: minItemWidth,
-                marginLeft: `${itemMargin}`,
-                marginRight: `${itemMargin}`,
-              }}
-            >
-              <img
-                src={`${baseImgUrl}${item.poster_path}`}
-                alt={name}
-                loading="lazy"
-                className="h-64 w-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/30 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="mb-1 text-lg font-bold text-white">{name}</div>
-                <div className="text-xs text-gray-300">{releaseDate}</div>
+      <div className="relative w-full overflow-visible">
+        <div
+          ref={scrollRef}
+          className="no-scrollbar flex w-full snap-x snap-mandatory flex-row overflow-x-scroll"
+          style={{
+            scrollPaddingLeft: buttonWidth,
+            scrollPaddingRight: buttonWidth,
+          }}
+        >
+          {displayItems.map((item, idx) => {
+            const name = "title" in item ? item.title : item.name;
+            const releaseDate =
+              "release_date" in item ? item.release_date : item.first_air_date;
+
+            const currentIndex = idx % itemsPerPage;
+            const getTransformOrigin = () => {
+              if (currentIndex === 0) {
+                return "left";
+              } else if (currentIndex === itemsPerPage - 1) {
+                return "right";
+              } else {
+                return "center";
+              }
+            };
+
+            return (
+              <div
+                key={`carousel-item-${idx}`}
+                className="group/carousel-item relative snap-start overflow-hidden rounded-lg transition-transform duration-300"
+                style={{
+                  minWidth: itemWidth,
+                  marginLeft: itemMargin,
+                  marginRight: itemMargin,
+                }}
+              >
+                <img
+                  src={`${baseImgUrl}${item.poster_path}`}
+                  alt={name}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+                <div
+                  className="invisible fixed z-50 min-h-[calc(50%)] w-[calc(50%)] -translate-y-[calc(100%-5rem)] scale-105 overflow-hidden rounded-lg bg-[#181818] opacity-0 shadow-lg shadow-black transition-all delay-0 group-hover/carousel-item:visible hover:scale-125 hover:opacity-100 hover:delay-500"
+                  style={{
+                    left: `calc(${buttonWidth} + ${idx % itemsPerPage} * (${itemMargin} * 2) + ${idx % itemsPerPage} * (${itemWidth}))`,
+                    width: itemWidth,
+                    transformOrigin: getTransformOrigin(),
+                  }}
+                >
+                  <img
+                    src={`${baseImgUrl}${item.poster_path}`}
+                    alt={name}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="h-[5rem] p-4">
+                    <h3 className="text-center text-base font-semibold">
+                      {name}
+                      <span className="text-sm font-normal opacity-60">
+                        &nbsp; {new Date(releaseDate).getFullYear()}
+                      </span>
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs">
+                      <Icon icon="mdi:star" className="text-yellow-400" />
+                      <span className="opacity-60">
+                        {item.vote_average.toFixed(1)} (
+                        {formatNumberShort(item.vote_count)})
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
       <button
         aria-label="previous"

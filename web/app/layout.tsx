@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ background: "#141414" }}
+        style={{ background: "#141414", color: "#fff" }}
       >
         <div className="flex w-full items-center gap-4 p-4">
           <Link href="/movies" className="text-blue-500 underline">
