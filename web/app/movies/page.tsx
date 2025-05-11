@@ -10,8 +10,8 @@ export default function MoviesPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Popular Movies</h1>
+    <div>
+      <h1 className="mb-4 text-2xl font-bold">Popular Movies</h1>
       <MovieList movies={movies} />
     </div>
   );

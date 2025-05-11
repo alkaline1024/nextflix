@@ -10,8 +10,8 @@ export default function TvPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Popular TV Shows</h1>
+    <div>
+      <h1 className="mb-4 text-2xl font-bold">Popular TV Shows</h1>
       <TvList tv={tv} />
     </div>
   );
