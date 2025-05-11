@@ -8,6 +8,7 @@ const AppHeader = () => {
     { label: "Home", path: "/home" },
     { label: "Movies", path: "/movies" },
     { label: "TV Shows", path: "/tv" },
+    { label: "My List", path: "/my-list" },
   ];
 
   return (
