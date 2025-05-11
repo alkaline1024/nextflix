@@ -29,36 +29,25 @@ export default function Home() {
 
   return (
     <div className="relative mb-64 space-y-12">
-      {!trendingTvLoading ? (
-        <div>
-          <BillBoard billboard={billboard} loading={trendingTvLoading} />
-          <div className="relative z-10 space-y-10 pt-16">
-            <Carousel
-              title="Trending Movies Today"
-              genres={movieGenres}
-              items={trendingMovies}
-              loading={trendingMovieLoading}
-              error={trendingMovieError}
-            />
-            <Carousel
-              title="Trending TV Shows Today"
-              genres={tvGenres}
-              items={trendingTv}
-              loading={trendingTvLoading}
-              error={trendingTvError}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="mt-16 flex p-16">
-          <div
-            className="aspect-[2/3] animate-pulse rounded-lg bg-white/10"
-            style={{
-              width: "10%",
-            }}
+      <div>
+        <BillBoard billboard={billboard} loading={trendingTvLoading} />
+        <div className="relative z-10 space-y-10 pt-16">
+          <Carousel
+            title="Trending Movies Today"
+            genres={movieGenres}
+            items={trendingMovies}
+            loading={trendingMovieLoading}
+            error={trendingMovieError}
+          />
+          <Carousel
+            title="Trending TV Shows Today"
+            genres={tvGenres}
+            items={trendingTv}
+            loading={trendingTvLoading}
+            error={trendingTvError}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 }
