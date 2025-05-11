@@ -11,25 +11,46 @@ import { MyListItem } from "@/application/repositories/my-list.repository.interf
 export function useMyList() {
   const repo = useMemo(() => new MyListLocalStorageRepository(), []);
   const [list, setList] = useState<MyListItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    repo.getList().then(setList);
+    repo
+      .getList()
+      .then(setList)
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : String(e)),
+      );
   }, [repo]);
 
   async function add(item: MyListItem) {
-    await new AddToMyListUseCase(repo).execute(item);
-    setList(await repo.getList());
+    try {
+      await new AddToMyListUseCase(repo).execute(item);
+      setList(await repo.getList());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   }
 
   async function remove(id: number) {
-    await new RemoveFromMyListUseCase(repo).execute(id);
-    setList(await repo.getList());
+    try {
+      await new RemoveFromMyListUseCase(repo).execute(id);
+      setList(await repo.getList());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   }
 
   async function clear() {
-    await new ClearMyListUseCase(repo).execute();
-    setList(await repo.getList());
+    try {
+      await new ClearMyListUseCase(repo).execute();
+      setList(await repo.getList());
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   }
 
-  return { list, add, remove, clear };
+  return { list, add, remove, clear, error };
 }
