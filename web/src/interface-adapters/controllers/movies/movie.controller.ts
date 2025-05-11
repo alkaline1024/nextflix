@@ -10,92 +10,90 @@ import {
   GetTrendingMoviesUseCase,
 } from "@/application/use-cases/get-movies";
 
-export function usePopularMovies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+type UseCase<T, Args extends unknown[]> = {
+  execute: (...args: Args) => Promise<T[]>;
+};
+
+function useFetchList<T, Args extends unknown[]>(
+  getUseCase: () => UseCase<T, Args>,
+  deps: React.DependencyList = [],
+  ...args: Args
+): { data: T[]; loading: boolean; error: string | null } {
+  const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const repo = new MovieApiRepository();
-    const useCase = new GetPopularMoviesUseCase(repo);
+    const useCase = getUseCase();
     useCase
-      .execute()
-      .then(setMovies)
-      .catch((e) => setError(e.message))
+      .execute(...args)
+      .then(setData)
+      .catch((e: unknown) =>
+        setError(e instanceof Error ? e.message : String(e)),
+      )
       .finally(() => setLoading(false));
-  }, []);
+  }, deps);
 
+  return { data, loading, error };
+}
+
+export function usePopularMovies() {
+  const {
+    data: movies,
+    loading,
+    error,
+  } = useFetchList<Movie, []>(
+    () => new GetPopularMoviesUseCase(new MovieApiRepository()),
+    [],
+  );
   return { movies, loading, error };
 }
 
 export function useNowPlayingMovies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const repo = new MovieApiRepository();
-    const useCase = new GetNowPlayingMoviesUseCase(repo);
-    useCase
-      .execute()
-      .then(setMovies)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
-
+  const {
+    data: movies,
+    loading,
+    error,
+  } = useFetchList<Movie, []>(
+    () => new GetNowPlayingMoviesUseCase(new MovieApiRepository()),
+    [],
+  );
   return { movies, loading, error };
 }
 
 export function useTopRatedMovies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const repo = new MovieApiRepository();
-    const useCase = new GetTopRatedMoviesUseCase(repo);
-    useCase
-      .execute()
-      .then(setMovies)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
-
+  const {
+    data: movies,
+    loading,
+    error,
+  } = useFetchList<Movie, []>(
+    () => new GetTopRatedMoviesUseCase(new MovieApiRepository()),
+    [],
+  );
   return { movies, loading, error };
 }
 
 export function useUpcomingMovies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const repo = new MovieApiRepository();
-    const useCase = new GetUpcomingMoviesUseCase(repo);
-    useCase
-      .execute()
-      .then(setMovies)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
-
+  const {
+    data: movies,
+    loading,
+    error,
+  } = useFetchList<Movie, []>(
+    () => new GetUpcomingMoviesUseCase(new MovieApiRepository()),
+    [],
+  );
   return { movies, loading, error };
 }
 
 export function useTrendingMovies(timeWindow: "day" | "week" = "day") {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const repo = new MovieApiRepository();
-    const useCase = new GetTrendingMoviesUseCase(repo);
-    useCase
-      .execute(timeWindow)
-      .then(setMovies)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [timeWindow]);
-
+  const {
+    data: movies,
+    loading,
+    error,
+  } = useFetchList<Movie, ["day" | "week"]>(
+    () => new GetTrendingMoviesUseCase(new MovieApiRepository()),
+    [timeWindow],
+    timeWindow,
+  );
   return { movies, loading, error };
 }
