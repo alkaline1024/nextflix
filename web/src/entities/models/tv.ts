@@ -1,15 +1,15 @@
 export interface Tv {
   id: number;
   name: string;
-  originalName: string;
-  originalLanguage: string;
+  original_name: string;
+  original_language: string;
   overview: string;
-  firstAirDate: string;
-  genreIds: number[];
+  first_air_date: string;
+  genre_ids: number[];
   popularity: number;
-  voteAverage: number;
-  voteCount: number;
-  backdropPath: string;
-  posterPath: string;
-  originCountry: string[];
+  vote_average: number;
+  vote_count: number;
+  backdrop_path: string;
+  poster_path: string;
+  origin_country: string[];
 }

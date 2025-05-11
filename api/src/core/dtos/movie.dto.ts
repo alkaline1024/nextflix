@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Movie } from '../entities/movie.entity';
 
 export class MoviePresenter {
   @ApiProperty()
@@ -7,15 +6,15 @@ export class MoviePresenter {
   @ApiProperty()
   title: string;
   @ApiProperty()
-  originalTitle: string;
+  original_title: string;
   @ApiProperty()
-  originalLanguage: string;
+  original_language: string;
   @ApiProperty()
   overview: string;
   @ApiProperty()
-  releaseDate: string;
+  release_date: string;
   @ApiProperty()
-  genreIds: number[];
+  genre_ids: number[];
   @ApiProperty()
   adult: boolean;
   @ApiProperty()
@@ -23,28 +22,11 @@ export class MoviePresenter {
   @ApiProperty()
   popularity: number;
   @ApiProperty()
-  voteAverage: number;
+  vote_average: number;
   @ApiProperty()
-  voteCount: number;
+  vote_count: number;
   @ApiProperty()
-  backdropPath: string;
+  backdrop_path: string;
   @ApiProperty()
-  posterPath: string;
-
-  constructor(movie: Movie) {
-    this.id = movie.id;
-    this.title = movie.title;
-    this.originalTitle = movie.original_title;
-    this.originalLanguage = movie.original_language;
-    this.overview = movie.overview;
-    this.releaseDate = movie.release_date;
-    this.genreIds = movie.genre_ids;
-    this.adult = movie.adult;
-    this.video = movie.video;
-    this.popularity = movie.popularity;
-    this.voteAverage = movie.vote_average;
-    this.voteCount = movie.vote_count;
-    this.backdropPath = movie.backdrop_path;
-    this.posterPath = movie.poster_path;
-  }
+  poster_path: string;
 }

@@ -7,41 +7,25 @@ export class TvPresenter {
   @ApiProperty()
   name: string;
   @ApiProperty()
-  originalName: string;
+  original_name: string;
   @ApiProperty()
-  originalLanguage: string;
+  original_language: string;
   @ApiProperty()
   overview: string;
   @ApiProperty()
-  firstAirDate: string;
+  first_air_date: string;
   @ApiProperty()
-  genreIds: number[];
+  genre_ids: number[];
   @ApiProperty()
   popularity: number;
   @ApiProperty()
-  voteAverage: number;
+  vote_average: number;
   @ApiProperty()
-  voteCount: number;
+  vote_count: number;
   @ApiProperty()
-  backdropPath: string;
+  backdrop_path: string;
   @ApiProperty()
-  posterPath: string;
+  poster_path: string;
   @ApiProperty()
-  originCountry: string[];
-
-  constructor(tv: Tv) {
-    this.id = tv.id;
-    this.name = tv.name;
-    this.originalName = tv.original_name;
-    this.originalLanguage = tv.original_language;
-    this.overview = tv.overview;
-    this.firstAirDate = tv.first_air_date;
-    this.genreIds = tv.genre_ids;
-    this.popularity = tv.popularity;
-    this.voteAverage = tv.vote_average;
-    this.voteCount = tv.vote_count;
-    this.backdropPath = tv.backdrop_path;
-    this.posterPath = tv.poster_path;
-    this.originCountry = tv.origin_country;
-  }
+  origin_country: string[];
 }
