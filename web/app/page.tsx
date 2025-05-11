@@ -8,11 +8,11 @@ export default function Home() {
         Nextflix Clean Architecture Demo
       </h1>
       <div className="space-x-4">
-        <Link href="/movies" className="text-blue-500 underline">
-          Popular Movies
+        <Link href="/movies" className="hover:opacity-90">
+          Movies
         </Link>
-        <Link href="/tv" className="text-blue-500 underline">
-          Popular TV Shows
+        <Link href="/tv" className="hover:opacity-90">
+          TV Shows
         </Link>
       </div>
     </div>
