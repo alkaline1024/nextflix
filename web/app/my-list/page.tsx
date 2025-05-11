@@ -2,6 +2,7 @@
 
 import { useMyList } from "@/interface-adapters/controllers/my-list/my-list.controller";
 import Card from "../_components/Card";
+import { SectionState } from "../_components/SectionState";
 
 export default function MyListPage() {
   const { list } = useMyList();
@@ -9,11 +10,9 @@ export default function MyListPage() {
   return (
     <div className="mx-16 mb-64 space-y-12 pt-24">
       <div className="mb-12 text-4xl font-bold">My List</div>
-      <ul className="grid grid-cols-2 gap-4 space-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {list.length === 0 ? (
-          <li className="text-gray-400">No items in your list.</li>
-        ) : (
-          list.map((item, idx) => (
+      <SectionState empty={list.length === 0}>
+        <ul className="grid grid-cols-2 gap-4 space-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {list.map((item, idx) => (
             <Card
               key={item.id}
               idx={idx}
@@ -21,9 +20,9 @@ export default function MyListPage() {
               genres={[]}
               dynamicTop={true}
             />
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      </SectionState>
     </div>
   );
 }

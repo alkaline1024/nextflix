@@ -38,3 +38,18 @@ export function getBackdropUrl(
   if (!item.backdrop_path) return "";
   return `https://image.tmdb.org/t/p/${size}${item.backdrop_path}`;
 }
+
+export async function fetchWithErrorHandling<T>(
+  input: RequestInfo,
+  init?: RequestInit,
+): Promise<T> {
+  try {
+    const res = await fetch(input, init);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    throw err;
+  }
+}
