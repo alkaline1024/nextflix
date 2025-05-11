@@ -12,7 +12,7 @@ Nextflix is a full-stack web application example using **Next.js** (frontend) an
 
 ## Tech Stack
 
-- **Frontend:** Next.js 14, Tailwind CSS ([see details](web/README.md))
+- **Frontend:** Next.js 15, Tailwind CSS ([see details](web/README.md))
 - **Backend:** NestJS, TypeScript ([see details](api/README.md))
 
 ## Architecture Overview

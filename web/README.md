@@ -1,6 +1,6 @@
 # Nextflix Web
 
-Nextflix Web is the frontend for the Nextflix project, built with **Next.js 14** and **Tailwind CSS**. It follows Clean Architecture for maintainability and scalability, and connects to the backend API (NestJS) for movie/TV data.
+Nextflix Web is the frontend for the Nextflix project, built with **Next.js 15** and **Tailwind CSS**. It follows Clean Architecture for maintainability and scalability, and connects to the backend API (NestJS) for movie/TV data.
 
 ## Features
 
