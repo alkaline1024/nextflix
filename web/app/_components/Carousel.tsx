@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Movie } from "@/entities/models/movie";
-import { Tv } from "@/entities/models/tv";
+import { useRef } from "react";
 import { Icon } from "@iconify/react";
+import { Tv } from "@/entities/models/tv";
+import { Movie } from "@/entities/models/movie";
 import { Genre } from "@/entities/models/genre";
-
-const baseImgUrl = "https://image.tmdb.org/t/p/w500";
+import Card from "./Card";
 
 export function Carousel({
   title,
@@ -21,8 +20,6 @@ export function Carousel({
   loading: boolean;
   error: string | null;
 }) {
-  let hoverTimeout: NodeJS.Timeout;
-  const [currentHoverIndex, setCurrentHoverIndex] = useState(-1);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const buttonWidth = "64px";
@@ -52,17 +49,6 @@ export function Carousel({
       behavior: "smooth",
     });
   };
-
-  function formatNumberShort(num: number): string {
-    if (num >= 1_000_000) {
-      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-    } else if (num >= 10_000) {
-      return (num / 1_000).toFixed(0).replace(/\.0$/, "") + "K";
-    } else if (num >= 1_000) {
-      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-    }
-    return num.toString();
-  }
 
   if (loading)
     return (
@@ -137,120 +123,18 @@ export function Carousel({
             }}
           >
             {items.map((item, idx) => {
-              const name = "title" in item ? item.title : item.name;
-              const releaseDate =
-                "release_date" in item
-                  ? item.release_date
-                  : item.first_air_date;
-
-              let currentLeft = 0;
-              const isHover = currentHoverIndex === idx;
-              const currentItem = scrollRef.current?.children?.item(idx);
-              const rect = currentItem?.getBoundingClientRect();
-              if (rect) {
-                currentLeft = rect.left;
-              }
-
-              const getTransformOrigin = () => {
-                if (currentLeft < window.innerWidth / 4) {
-                  return "left";
-                } else if (currentLeft > (window.innerWidth * 3) / 4) {
-                  return "right";
-                } else {
-                  return "center";
-                }
-              };
-
               return (
-                <div
-                  id={`carousel-item-${idx}`}
+                <Card
                   key={`carousel-item-${idx}`}
-                  className="group/carousel-item cursor-pointer snap-start overflow-hidden rounded-lg transition-transform duration-300"
-                  style={{
-                    minWidth: itemWidth,
-                    marginLeft: idx === 0 ? buttonWidth : itemMargin,
-                    marginRight:
-                      idx === items.length - 1 ? buttonWidth : itemMargin,
-                  }}
-                  onMouseEnter={() => {
-                    hoverTimeout = setTimeout(() => {
-                      setCurrentHoverIndex(idx);
-                    }, 500);
-                  }}
-                  onMouseLeave={() => {
-                    console.log("Mouse leave");
-                    clearTimeout(hoverTimeout);
-                    setCurrentHoverIndex(-1);
-                  }}
-                >
-                  <img
-                    alt={name}
-                    src={`${baseImgUrl}${item.poster_path}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                  {/* Preview Component */}
-                  <div
-                    className="overflow-visibility absolute top-0 z-50 cursor-default"
-                    style={{
-                      width: itemWidth,
-                      left: currentLeft ?? undefined,
-                      visibility: isHover ? "visible" : "hidden",
-                    }}
-                  >
-                    <div
-                      className="overflow-hidden rounded-lg bg-[#181818] shadow-lg shadow-black transition-all duration-300"
-                      style={{
-                        scale: isHover ? 1.5 : 1,
-                        transformOrigin: getTransformOrigin(),
-                      }}
-                    >
-                      <img
-                        src={`${baseImgUrl}${item.poster_path}`}
-                        alt={name}
-                        loading="lazy"
-                        className="h-full w-full object-cover"
-                      />
-                      <div
-                        className="space-y-1 p-3 transition-all delay-100 duration-200"
-                        style={{
-                          opacity: isHover ? 1 : 0,
-                        }}
-                      >
-                        <div className="flex items-center justify-start gap-1 text-sm">
-                          <Icon icon="mdi:star" className="text-yellow-400" />
-                          <span className="opacity-60">
-                            {item.vote_average.toFixed(1)} (
-                            {formatNumberShort(item.vote_count)})
-                          </span>
-                        </div>
-                        <h3 className="text-start text-base font-semibold">
-                          {name}
-                          <span className="text-sm font-normal opacity-60">
-                            &nbsp; {new Date(releaseDate).getFullYear()}
-                          </span>
-                        </h3>
-                        <div className="text-xs">
-                          <div className="flex flex-wrap items-center">
-                            {item.genre_ids.map((id, idx) => {
-                              const genre = genres.find((g) => g.id === id);
-                              return genre ? (
-                                <div key={id} className="flex items-center">
-                                  {idx > 0 && (
-                                    <div className="px-[6px] text-[16px] opacity-60">
-                                      &bull;
-                                    </div>
-                                  )}
-                                  <span key={id}>{genre.name}</span>
-                                </div>
-                              ) : null;
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  idx={idx}
+                  item={item}
+                  genres={genres}
+                  itemWidth={itemWidth}
+                  itemMarginLeft={idx === 0 ? buttonWidth : itemMargin}
+                  itemMarginRight={
+                    idx === items.length - 1 ? buttonWidth : itemMargin
+                  }
+                />
               );
             })}
           </div>
